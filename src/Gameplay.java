@@ -1,25 +1,24 @@
-import java.util.*;
 import java.awt.event.*;
 
 import javax.swing.*;
 
 import java.awt.*;
 
-import javax.swing.*;
 import javax.swing.Timer;
 
 public class Gameplay extends JPanel implements KeyListener, ActionListener 
 {
+	private Player player;
+
 	private boolean play = false;
 	private int score = 0;
 	
 	private int totalBricks = 48;
 	
 	private Timer timer;
-	private int delay=8;
+	private int delay = 8;
 	
-	private int playerX = 310;
-	
+
 	private int ballposX = 120;
 	private int ballposY = 350;
 	private int ballXdir = -1;
@@ -33,7 +32,8 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener
 		addKeyListener(this);
 		setFocusable(true);
 		setFocusTraversalKeysEnabled(false);
-        timer=new Timer(delay,this);
+		player = new Player();
+        timer = new Timer(delay,this);
 		timer.start();
 	}
 	
@@ -59,7 +59,7 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener
 		
 		// the paddle
 		g.setColor(Color.green);
-		g.fillRect(playerX, 550, 100, 8);
+		g.fillRect(player.x, 550, 100, 8);
 		
 		// the ball
 		g.setColor(Color.yellow);
@@ -102,9 +102,9 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener
 	{
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
 		{        
-			if(playerX >= 600)
+			if(player.x >= 600)
 			{
-				playerX = 600;
+				player.x = 600;
 			}
 			else
 			{
@@ -114,9 +114,9 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener
 		
 		if (e.getKeyCode() == KeyEvent.VK_LEFT)
 		{          
-			if(playerX < 10)
+			if(player.x < 10)
 			{
-				playerX = 10;
+				player.x = 10;
 			}
 			else
 			{
@@ -132,7 +132,7 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener
 				ballposY = 350;
 				ballXdir = -1;
 				ballYdir = -2;
-				playerX = 310;
+				player.x = 310;
 				score = 0;
 				totalBricks = 21;
 				map = new MapGenerator(3, 7);
@@ -148,13 +148,13 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener
 	public void moveRight()
 	{
 		play = true;
-		playerX+=20;	
+		player.x += 20;
 	}
 	
 	public void moveLeft()
 	{
 		play = true;
-		playerX-=20;	 	
+		player.x -= 20;
 	}
 	
 	public void actionPerformed(ActionEvent e) 
@@ -162,17 +162,17 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener
 		timer.start();
 		if(play)
 		{			
-			if(new Rectangle(ballposX, ballposY, 20, 20).intersects(new Rectangle(playerX, 550, 30, 8)))
+			if(new Rectangle(ballposX, ballposY, 20, 20).intersects(new Rectangle(player.x, 550, 30, 8)))
 			{
 				ballYdir = -ballYdir;
 				ballXdir = -2;
 			}
-			else if(new Rectangle(ballposX, ballposY, 20, 20).intersects(new Rectangle(playerX + 70, 550, 30, 8)))
+			else if(new Rectangle(ballposX, ballposY, 20, 20).intersects(new Rectangle(player.x + 70, 550, 30, 8)))
 			{
 				ballYdir = -ballYdir;
 				ballXdir = ballXdir + 1;
 			}
-			else if(new Rectangle(ballposX, ballposY, 20, 20).intersects(new Rectangle(playerX + 30, 550, 40, 8)))
+			else if(new Rectangle(ballposX, ballposY, 20, 20).intersects(new Rectangle(player.x + 30, 550, 40, 8)))
 			{
 				ballYdir = -ballYdir;
 			}
@@ -201,7 +201,7 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener
 							totalBricks--;
 							
 							// when ball hit right or left of brick
-							if(ballposX + 19 <= brickRect.x || ballposX + 1 >= brickRect.x + brickRect.width)	
+							if(ballposX + 19 <= brickRect.x || ballposX + 1 >= brickRect.x + brickRect.width)
 							{
 								ballXdir = -ballXdir;
 							}
