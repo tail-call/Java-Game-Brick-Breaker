@@ -123,21 +123,22 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener
         }		
 		if (e.getKeyCode() == KeyEvent.VK_ENTER)
 		{          
-			if(!isPlaying)
-			{
-				isPlaying = true;
-				ball.x = 120;
-				ball.y = 350;
-				ball.xDirection = -1;
-				ball.yDirection = -2;
-				player.x = 310;
-				score = 0;
-				totalBricks = 21;
-				map = new MapGenerator(3, 7);
-				
-				repaint();
-			}
+			if (!isPlaying) { restartGame(); }
         }		
+	}
+
+	private void restartGame() {
+		isPlaying = true;
+		ball.x = 120;
+		ball.y = 350;
+		ball.xDirection = -1;
+		ball.yDirection = -2;
+		player.x = 310;
+		score = 0;
+		totalBricks = 21;
+		map = new MapGenerator(3, 7);
+
+		repaint();
 	}
 
 	public void keyReleased(KeyEvent e) {}
