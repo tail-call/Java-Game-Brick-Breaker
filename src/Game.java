@@ -41,4 +41,22 @@ public class Game {
         totalBricks = 21;
         level = new Level(3, 7);
     }
+
+    void moveLeft() {
+        if (player.x < 10) {
+            player.x = 10;
+        } else {
+            isPlaying = true;
+            player.x -= 20;
+        }
+    }
+
+    void moveRight() {
+        if (player.x >= 600) {
+            player.x = 600;
+        } else {
+            isPlaying = true;
+            player.x += 20;
+        }
+    }
 }
