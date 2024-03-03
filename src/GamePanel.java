@@ -8,29 +8,22 @@ import javax.swing.Timer;
 
 public class GamePanel extends JPanel implements KeyListener, ActionListener
 {
+	private final Game game;
 	private final Player player;
-	private Ball ball;
-
-	private boolean isPlaying = false;
-	private int score = 0;
-	
-	private int totalBricks = 48;
-	
-	private Timer timer;
-	private int delay = 8;
-	
-
-
-	private MapGenerator map;
+	private final Ball ball;
+	private final Timer timer;
+    private MapGenerator map;
 	
 	public GamePanel()
-	{		
+	{
+		int delay = 8;
 		map = new MapGenerator(4, 12);
 		addKeyListener(this);
 		setFocusable(true);
 		setFocusTraversalKeysEnabled(false);
 		player = new Player();
 		ball = new Ball();
+		game = new Game();
         timer = new Timer(delay,this);
 		timer.start();
 	}
@@ -53,7 +46,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener
 		// the scores 		
 		g.setColor(Color.white);
 		g.setFont(new Font("serif",Font.BOLD, 25));
-		g.drawString(""+score, 590,30);
+		g.drawString("" + game.score, 590,30);
 		
 		// the paddle
 		g.setColor(Color.green);
@@ -64,9 +57,9 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener
 		g.fillOval(ball.x, ball.y, 20, 20);
 	
 		// when you won the game
-		if(totalBricks <= 0)
+		if(game.totalBricks <= 0)
 		{
-			 isPlaying = false;
+			 game.isPlaying = false;
              ball.xDirection = 0;
      		 ball.yDirection = 0;
              g.setColor(Color.RED);
@@ -81,12 +74,12 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener
 		// when you lose the game
 		if(ball.y > 570)
         {
-			 isPlaying = false;
+			 game.isPlaying = false;
              ball.xDirection = 0;
      		 ball.yDirection = 0;
              g.setColor(Color.RED);
              g.setFont(new Font("serif",Font.BOLD, 30));
-             g.drawString("Game Over, Scores: "+score, 190,300);
+             g.drawString("Game Over, Scores: " + game.score, 190,300);
              
              g.setColor(Color.RED);
              g.setFont(new Font("serif",Font.BOLD, 20));           
@@ -123,19 +116,19 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener
         }		
 		if (e.getKeyCode() == KeyEvent.VK_ENTER)
 		{          
-			if (!isPlaying) { restartGame(); }
+			if (!game.isPlaying) { restartGame(); }
         }		
 	}
 
 	private void restartGame() {
-		isPlaying = true;
+		game.isPlaying = true;
 		ball.x = 120;
 		ball.y = 350;
 		ball.xDirection = -1;
 		ball.yDirection = -2;
 		player.x = 310;
-		score = 0;
-		totalBricks = 21;
+		game.score = 0;
+		game.totalBricks = 21;
 		map = new MapGenerator(3, 7);
 
 		repaint();
@@ -146,20 +139,20 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener
 	
 	public void moveRight()
 	{
-		isPlaying = true;
+		game.isPlaying = true;
 		player.x += 20;
 	}
 	
 	public void moveLeft()
 	{
-		isPlaying = true;
+		game.isPlaying = true;
 		player.x -= 20;
 	}
 	
 	public void actionPerformed(ActionEvent e) 
 	{
 		timer.start();
-		if(isPlaying)
+		if(game.isPlaying)
 		{			
 			if(new Rectangle(ball.x, ball.y, 20, 20).intersects(new Rectangle(player.x, 550, 30, 8)))
 			{
@@ -196,8 +189,8 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener
 						if(ballRect.intersects(brickRect))
 						{					
 							map.setBrickValue(0, i, j);
-							score+=5;	
-							totalBricks--;
+							game.score += 5;
+							game.totalBricks--;
 							
 							// when ball hit right or left of brick
 							if(ball.x + 19 <= brickRect.x || ball.x + 1 >= brickRect.x + brickRect.width)
