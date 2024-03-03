@@ -19,11 +19,8 @@ public class GamePanel extends JPanel {
                 repaint();
             }
         });
-        addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent keyEvent) {
-            }
 
+        addKeyListener(new KeyListener() {
             @Override
             public void keyPressed(KeyEvent keyEvent) {
                 switch (keyEvent.getKeyCode()) {
@@ -43,9 +40,10 @@ public class GamePanel extends JPanel {
             }
 
             @Override
-            public void keyReleased(KeyEvent keyEvent) {
+            public void keyTyped(KeyEvent keyEvent) { }
 
-            }
+            @Override
+            public void keyReleased(KeyEvent keyEvent) { }
         });
 
         setFocusable(true);
@@ -54,52 +52,24 @@ public class GamePanel extends JPanel {
     }
 
     public void paint(Graphics graphics) {
-        // background
-        graphics.setColor(Color.black);
-        graphics.fillRect(1, 1, 692, 592);
+        Painter painter = new Painter(graphics);
 
-        game.level.draw((Graphics2D) graphics);
-
-        // borders
-        graphics.setColor(Color.yellow);
-        graphics.fillRect(0, 0, 3, 592);
-        graphics.fillRect(0, 0, 692, 3);
-        graphics.fillRect(691, 0, 3, 592);
-
-        // the scores
-        graphics.setColor(Color.white);
-        graphics.setFont(new Font("serif", Font.BOLD, 25));
-        graphics.drawString("" + game.score, 590, 30);
-
-        // the paddle
-        graphics.setColor(Color.green);
-        graphics.fillRect(game.player.x, 550, 100, 8);
-
-        // the ball
-        graphics.setColor(Color.yellow);
-        graphics.fillOval(game.ball.x, game.ball.y, 20, 20);
+        painter.paintBackground();
+        painter.paintLevel(game.level);
+        painter.paintBorders();
+        painter.paintScore(game.score);
+        painter.paintPlayer(game.player);
+        painter.paintBall(game.ball);
 
         game.checkState(new GameDelegate() {
             @Override
             public void didWin(Game game) {
-                graphics.setColor(Color.RED);
-                graphics.setFont(new Font("serif",Font.BOLD, 30));
-                graphics.drawString("You Won", 260,300);
-
-                graphics.setColor(Color.RED);
-                graphics.setFont(new Font("serif",Font.BOLD, 20));
-                graphics.drawString("Press (Enter) to Restart", 230,350);
+                painter.paintVictoryScreen();
             }
 
             @Override
             public void didLose(Game game) {
-                graphics.setColor(Color.RED);
-                graphics.setFont(new Font("serif",Font.BOLD, 30));
-                graphics.drawString("Game Over, Scores: " + game.score, 190,300);
-
-                graphics.setColor(Color.RED);
-                graphics.setFont(new Font("serif",Font.BOLD, 20));
-                graphics.drawString("Press (Enter) to Restart", 230,350);
+                painter.paintFailureScreen(game);
             }
         });
 
