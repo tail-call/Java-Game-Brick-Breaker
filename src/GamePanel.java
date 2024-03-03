@@ -8,11 +8,11 @@ import java.awt.event.KeyListener;
 public class GamePanel extends JPanel implements KeyListener, ActionListener {
     private final Game game;
     private final Timer timer;
-    private MapGenerator map;
+    private Level level;
 
     public GamePanel() {
         int delay = 8;
-        map = new MapGenerator(4, 12);
+        level = new Level(4, 12);
         addKeyListener(this);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
@@ -26,8 +26,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         g.setColor(Color.black);
         g.fillRect(1, 1, 692, 592);
 
-        // drawing map
-        map.draw((Graphics2D) g);
+        level.draw((Graphics2D) g);
 
         // borders
         g.setColor(Color.yellow);
@@ -107,7 +106,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         game.player.x = 310;
         game.score = 0;
         game.totalBricks = 21;
-        map = new MapGenerator(3, 7);
+        level = new Level(3, 7);
 
         repaint();
     }
@@ -143,26 +142,25 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 
             // check map collision with the ball
             A:
-            for (int i = 0; i < map.map.length; i++) {
-                for (int j = 0; j < map.map[0].length; j++) {
-                    if (map.map[i][j] > 0) {
+            for (int i = 0; i < level.map.length; i++) {
+                for (int j = 0; j < level.map[0].length; j++) {
+                    if (level.map[i][j] > 0) {
                         //scores++;
-                        int brickX = j * map.brickWidth + 80;
-                        int brickY = i * map.brickHeight + 50;
-                        int brickWidth = map.brickWidth;
-                        int brickHeight = map.brickHeight;
+                        int brickX = j * level.brickWidth + 80;
+                        int brickY = i * level.brickHeight + 50;
+                        int brickWidth = level.brickWidth;
+                        int brickHeight = level.brickHeight;
 
                         Rectangle rect = new Rectangle(brickX, brickY, brickWidth, brickHeight);
                         Rectangle ballRect = new Rectangle(game.ball.x, game.ball.y, 20, 20);
-                        Rectangle brickRect = rect;
 
-                        if (ballRect.intersects(brickRect)) {
-                            map.setBrickValue(0, i, j);
+                        if (ballRect.intersects(rect)) {
+                            level.setBrickValue(0, i, j);
                             game.score += 5;
                             game.totalBricks--;
 
                             // when ball hit right or left of brick
-                            if (game.ball.x + 19 <= brickRect.x || game.ball.x + 1 >= brickRect.x + brickRect.width) {
+                            if (game.ball.x + 19 <= rect.x || game.ball.x + 1 >= rect.x + rect.width) {
                                 game.ball.xDirection = -game.ball.xDirection;
                             }
                             // when ball hits top or bottom of brick
