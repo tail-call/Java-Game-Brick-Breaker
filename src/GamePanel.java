@@ -9,8 +9,6 @@ import javax.swing.Timer;
 public class GamePanel extends JPanel implements KeyListener, ActionListener
 {
 	private final Game game;
-	private final Player player;
-	private final Ball ball;
 	private final Timer timer;
     private MapGenerator map;
 	
@@ -21,9 +19,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener
 		addKeyListener(this);
 		setFocusable(true);
 		setFocusTraversalKeysEnabled(false);
-		player = new Player();
-		ball = new Ball();
-		game = new Game();
+		game = new Game(new Player(), new Ball());
         timer = new Timer(delay,this);
 		timer.start();
 	}
@@ -50,18 +46,18 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener
 		
 		// the paddle
 		g.setColor(Color.green);
-		g.fillRect(player.x, 550, 100, 8);
+		g.fillRect(game.player.x, 550, 100, 8);
 		
 		// the ball
 		g.setColor(Color.yellow);
-		g.fillOval(ball.x, ball.y, 20, 20);
+		g.fillOval(game.ball.x, game.ball.y, 20, 20);
 	
 		// when you won the game
 		if(game.totalBricks <= 0)
 		{
 			 game.isPlaying = false;
-             ball.xDirection = 0;
-     		 ball.yDirection = 0;
+             game.ball.xDirection = 0;
+     		 game.ball.yDirection = 0;
              g.setColor(Color.RED);
              g.setFont(new Font("serif",Font.BOLD, 30));
              g.drawString("You Won", 260,300);
@@ -72,11 +68,11 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener
 		}
 		
 		// when you lose the game
-		if(ball.y > 570)
+		if(game.ball.y > 570)
         {
 			 game.isPlaying = false;
-             ball.xDirection = 0;
-     		 ball.yDirection = 0;
+             game.ball.xDirection = 0;
+     		 game.ball.yDirection = 0;
              g.setColor(Color.RED);
              g.setFont(new Font("serif",Font.BOLD, 30));
              g.drawString("Game Over, Scores: " + game.score, 190,300);
@@ -93,9 +89,9 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener
 	{
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
 		{        
-			if(player.x >= 600)
+			if(game.player.x >= 600)
 			{
-				player.x = 600;
+				game.player.x = 600;
 			}
 			else
 			{
@@ -105,9 +101,9 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener
 		
 		if (e.getKeyCode() == KeyEvent.VK_LEFT)
 		{          
-			if(player.x < 10)
+			if(game.player.x < 10)
 			{
-				player.x = 10;
+				game.player.x = 10;
 			}
 			else
 			{
@@ -122,11 +118,11 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener
 
 	private void restartGame() {
 		game.isPlaying = true;
-		ball.x = 120;
-		ball.y = 350;
-		ball.xDirection = -1;
-		ball.yDirection = -2;
-		player.x = 310;
+		game.ball.x = 120;
+		game.ball.y = 350;
+		game.ball.xDirection = -1;
+		game.ball.yDirection = -2;
+		game.player.x = 310;
 		game.score = 0;
 		game.totalBricks = 21;
 		map = new MapGenerator(3, 7);
@@ -140,13 +136,13 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener
 	public void moveRight()
 	{
 		game.isPlaying = true;
-		player.x += 20;
+		game.player.x += 20;
 	}
 	
 	public void moveLeft()
 	{
 		game.isPlaying = true;
-		player.x -= 20;
+		game.player.x -= 20;
 	}
 	
 	public void actionPerformed(ActionEvent e) 
@@ -154,19 +150,19 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener
 		timer.start();
 		if(game.isPlaying)
 		{			
-			if(new Rectangle(ball.x, ball.y, 20, 20).intersects(new Rectangle(player.x, 550, 30, 8)))
+			if(new Rectangle(game.ball.x, game.ball.y, 20, 20).intersects(new Rectangle(game.player.x, 550, 30, 8)))
 			{
-				ball.yDirection = -ball.yDirection;
-				ball.xDirection = -2;
+				game.ball.yDirection = -game.ball.yDirection;
+				game.ball.xDirection = -2;
 			}
-			else if(new Rectangle(ball.x, ball.y, 20, 20).intersects(new Rectangle(player.x + 70, 550, 30, 8)))
+			else if(new Rectangle(game.ball.x, game.ball.y, 20, 20).intersects(new Rectangle(game.player.x + 70, 550, 30, 8)))
 			{
-				ball.yDirection = -ball.yDirection;
-				ball.xDirection = ball.xDirection + 1;
+				game.ball.yDirection = -game.ball.yDirection;
+				game.ball.xDirection = game.ball.xDirection + 1;
 			}
-			else if(new Rectangle(ball.x, ball.y, 20, 20).intersects(new Rectangle(player.x + 30, 550, 40, 8)))
+			else if(new Rectangle(game.ball.x, game.ball.y, 20, 20).intersects(new Rectangle(game.player.x + 30, 550, 40, 8)))
 			{
-				ball.yDirection = -ball.yDirection;
+				game.ball.yDirection = -game.ball.yDirection;
 			}
 			
 			// check map collision with the ball		
@@ -183,7 +179,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener
 						int brickHeight = map.brickHeight;
 						
 						Rectangle rect = new Rectangle(brickX, brickY, brickWidth, brickHeight);					
-						Rectangle ballRect = new Rectangle(ball.x, ball.y, 20, 20);
+						Rectangle ballRect = new Rectangle(game.ball.x, game.ball.y, 20, 20);
 						Rectangle brickRect = rect;
 						
 						if(ballRect.intersects(brickRect))
@@ -193,14 +189,14 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener
 							game.totalBricks--;
 							
 							// when ball hit right or left of brick
-							if(ball.x + 19 <= brickRect.x || ball.x + 1 >= brickRect.x + brickRect.width)
+							if(game.ball.x + 19 <= brickRect.x || game.ball.x + 1 >= brickRect.x + brickRect.width)
 							{
-								ball.xDirection = -ball.xDirection;
+								game.ball.xDirection = -game.ball.xDirection;
 							}
 							// when ball hits top or bottom of brick
 							else
 							{
-								ball.yDirection = -ball.yDirection;
+								game.ball.yDirection = -game.ball.yDirection;
 							}
 							
 							break A;
@@ -209,20 +205,20 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener
 				}
 			}
 			
-			ball.x += ball.xDirection;
-			ball.y += ball.yDirection;
+			game.ball.x += game.ball.xDirection;
+			game.ball.y += game.ball.yDirection;
 			
-			if(ball.x < 0)
+			if(game.ball.x < 0)
 			{
-				ball.xDirection = -ball.xDirection;
+				game.ball.xDirection = -game.ball.xDirection;
 			}
-			if(ball.y < 0)
+			if(game.ball.y < 0)
 			{
-				ball.yDirection = -ball.yDirection;
+				game.ball.yDirection = -game.ball.yDirection;
 			}
-			if(ball.x > 670)
+			if(game.ball.x > 670)
 			{
-				ball.xDirection = -ball.xDirection;
+				game.ball.xDirection = -game.ball.xDirection;
 			}		
 			
 			repaint();		
