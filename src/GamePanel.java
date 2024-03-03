@@ -5,17 +5,51 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class GamePanel extends JPanel implements KeyListener, ActionListener {
+public class GamePanel extends JPanel {
     private final Game game;
     private final Timer timer;
 
     public GamePanel() {
-        int delay = 8;
-        addKeyListener(this);
+        game = new Game(new Player(), new Ball());
+        timer = new Timer(8, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                timer.start();
+                game.update();
+                repaint();
+            }
+        });
+        addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent keyEvent) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent keyEvent) {
+                switch (keyEvent.getKeyCode()) {
+                    case KeyEvent.VK_RIGHT:
+                        game.moveRight();
+                        break;
+                    case KeyEvent.VK_LEFT:
+                        game.moveLeft();
+                        break;
+                    case KeyEvent.VK_ENTER:
+                        if (!game.isPlaying) {
+                            game.restart();
+                            repaint();
+                        }
+                        break;
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent keyEvent) {
+
+            }
+        });
+
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
-        game = new Game(new Player(), new Ball());
-        timer = new Timer(delay, this);
         timer.start();
     }
 
@@ -70,34 +104,5 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         });
 
         graphics.dispose();
-    }
-
-    public void keyPressed(KeyEvent event) {
-        switch (event.getKeyCode()) {
-            case KeyEvent.VK_RIGHT:
-                game.moveRight();
-                break;
-            case KeyEvent.VK_LEFT:
-                game.moveLeft();
-                break;
-            case KeyEvent.VK_ENTER:
-                if (!game.isPlaying) {
-                    game.restart();
-                    repaint();
-                }
-                break;
-        }
-    }
-
-    public void keyReleased(KeyEvent e) {
-    }
-
-    public void keyTyped(KeyEvent e) {
-    }
-
-    public void actionPerformed(ActionEvent event) {
-        timer.start();
-        game.update();
-        repaint();
     }
 }
