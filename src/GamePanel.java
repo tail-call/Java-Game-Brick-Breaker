@@ -73,18 +73,19 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
     }
 
     public void keyPressed(KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.VK_RIGHT) {
-            game.moveRight();
-        }
-
-        if (event.getKeyCode() == KeyEvent.VK_LEFT) {
-            game.moveLeft();
-        }
-        if (event.getKeyCode() == KeyEvent.VK_ENTER) {
-            if (!game.isPlaying) {
-                game.restart();
-                repaint();
-            }
+        switch (event.getKeyCode()) {
+            case KeyEvent.VK_RIGHT:
+                game.moveRight();
+                break;
+            case KeyEvent.VK_LEFT:
+                game.moveLeft();
+                break;
+            case KeyEvent.VK_ENTER:
+                if (!game.isPlaying) {
+                    game.restart();
+                    repaint();
+                }
+                break;
         }
     }
 
