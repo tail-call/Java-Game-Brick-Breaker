@@ -19,68 +19,68 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         timer.start();
     }
 
-    public void paint(Graphics g) {
+    public void paint(Graphics graphics) {
         // background
-        g.setColor(Color.black);
-        g.fillRect(1, 1, 692, 592);
+        graphics.setColor(Color.black);
+        graphics.fillRect(1, 1, 692, 592);
 
-        game.level.draw((Graphics2D) g);
+        game.level.draw((Graphics2D) graphics);
 
         // borders
-        g.setColor(Color.yellow);
-        g.fillRect(0, 0, 3, 592);
-        g.fillRect(0, 0, 692, 3);
-        g.fillRect(691, 0, 3, 592);
+        graphics.setColor(Color.yellow);
+        graphics.fillRect(0, 0, 3, 592);
+        graphics.fillRect(0, 0, 692, 3);
+        graphics.fillRect(691, 0, 3, 592);
 
         // the scores
-        g.setColor(Color.white);
-        g.setFont(new Font("serif", Font.BOLD, 25));
-        g.drawString("" + game.score, 590, 30);
+        graphics.setColor(Color.white);
+        graphics.setFont(new Font("serif", Font.BOLD, 25));
+        graphics.drawString("" + game.score, 590, 30);
 
         // the paddle
-        g.setColor(Color.green);
-        g.fillRect(game.player.x, 550, 100, 8);
+        graphics.setColor(Color.green);
+        graphics.fillRect(game.player.x, 550, 100, 8);
 
         // the ball
-        g.setColor(Color.yellow);
-        g.fillOval(game.ball.x, game.ball.y, 20, 20);
+        graphics.setColor(Color.yellow);
+        graphics.fillOval(game.ball.x, game.ball.y, 20, 20);
 
         game.update(new GameDelegate() {
             @Override
             public void didWin(Game game) {
-                g.setColor(Color.RED);
-                g.setFont(new Font("serif",Font.BOLD, 30));
-                g.drawString("You Won", 260,300);
+                graphics.setColor(Color.RED);
+                graphics.setFont(new Font("serif",Font.BOLD, 30));
+                graphics.drawString("You Won", 260,300);
 
-                g.setColor(Color.RED);
-                g.setFont(new Font("serif",Font.BOLD, 20));
-                g.drawString("Press (Enter) to Restart", 230,350);
+                graphics.setColor(Color.RED);
+                graphics.setFont(new Font("serif",Font.BOLD, 20));
+                graphics.drawString("Press (Enter) to Restart", 230,350);
             }
 
             @Override
             public void didLose(Game game) {
-                g.setColor(Color.RED);
-                g.setFont(new Font("serif",Font.BOLD, 30));
-                g.drawString("Game Over, Scores: " + game.score, 190,300);
+                graphics.setColor(Color.RED);
+                graphics.setFont(new Font("serif",Font.BOLD, 30));
+                graphics.drawString("Game Over, Scores: " + game.score, 190,300);
 
-                g.setColor(Color.RED);
-                g.setFont(new Font("serif",Font.BOLD, 20));
-                g.drawString("Press (Enter) to Restart", 230,350);
+                graphics.setColor(Color.RED);
+                graphics.setFont(new Font("serif",Font.BOLD, 20));
+                graphics.drawString("Press (Enter) to Restart", 230,350);
             }
         });
 
-        g.dispose();
+        graphics.dispose();
     }
 
-    public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+    public void keyPressed(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.VK_RIGHT) {
             game.moveRight();
         }
 
-        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+        if (event.getKeyCode() == KeyEvent.VK_LEFT) {
             game.moveLeft();
         }
-        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+        if (event.getKeyCode() == KeyEvent.VK_ENTER) {
             if (!game.isPlaying) {
                 game.restart();
                 repaint();
@@ -94,7 +94,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
     public void keyTyped(KeyEvent e) {
     }
 
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent event) {
         timer.start();
         if (game.isPlaying) {
             if (new Rectangle(game.ball.x, game.ball.y, 20, 20).intersects(new Rectangle(game.player.x, 550, 30, 8))) {
