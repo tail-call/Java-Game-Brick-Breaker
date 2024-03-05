@@ -1,9 +1,9 @@
 import java.awt.*;
 
 public class Painter {
-    Graphics graphics;
+    Graphics2D graphics;
 
-    public Painter(Graphics graphics) {
+    public Painter(Graphics2D graphics) {
         this.graphics = graphics;
     }
 
@@ -13,7 +13,33 @@ public class Painter {
     }
 
     void paintLevel(Level level) {
-        level.draw((Graphics2D) graphics);
+        Pair<Integer, Integer> brickDimensions = level.getBrickDimensions();
+        int brickWidth = brickDimensions.first;
+        int brickHeight = brickDimensions.second;
+
+        for (int i = 0; i < level.bricks.length; i++) {
+            for (int j = 0; j < level.bricks[i].length; j++) {
+                if (level.bricks[i][j] > 0) {
+                    graphics.setColor(Color.white);
+                    graphics.fillRect(
+                        j * brickWidth + 80,
+                        i * brickHeight + 50,
+                        brickWidth,
+                        brickHeight
+                    );
+
+                    // this is just to show separate brick, game can still run without it
+                    graphics.setStroke(new BasicStroke(3));
+                    graphics.setColor(Color.black);
+                    graphics.drawRect(
+                        j * brickWidth + 80,
+                        i * brickHeight + 50,
+                        brickWidth,
+                        brickHeight
+                    );
+                }
+            }
+        }
     }
 
     void paintBorders() {

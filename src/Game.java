@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.awt.*;
 
 public class Game {
@@ -57,14 +58,16 @@ public class Game {
 
         // check map collision with the ball
         A:
-        for (int i = 0; i < level.map.length; i++) {
-            for (int j = 0; j < level.map[0].length; j++) {
-                if (level.map[i][j] > 0) {
+        for (int i = 0; i < level.bricks.length; i++) {
+            for (int j = 0; j < level.bricks[0].length; j++) {
+                if (level.bricks[i][j] > 0) {
+                    Pair<Integer, Integer> brickDimensions = level.getBrickDimensions();
+                    int brickWidth = brickDimensions.first;
+                    int brickHeight = brickDimensions.second;
+
                     //scores++;
-                    int brickX = j * level.brickWidth + 80;
-                    int brickY = i * level.brickHeight + 50;
-                    int brickWidth = level.brickWidth;
-                    int brickHeight = level.brickHeight;
+                    int brickX = j * brickWidth + 80;
+                    int brickY = i * brickHeight + 50;
 
                     Rectangle rect = new Rectangle(brickX, brickY, brickWidth, brickHeight);
                     Rectangle ballRect = new Rectangle(ball.x, ball.y, 20, 20);

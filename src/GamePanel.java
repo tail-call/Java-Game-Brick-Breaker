@@ -52,7 +52,7 @@ public class GamePanel extends JPanel {
     }
 
     public void paint(Graphics graphics) {
-        Painter painter = new Painter(graphics);
+        Painter painter = new Painter((Graphics2D) graphics);
 
         painter.paintBackground();
         painter.paintLevel(game.level);
